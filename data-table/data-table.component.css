@@ -1,0 +1,16 @@
+.table-column-100 {
+    border: 1px solid #ccc;
+    padding: .5rem;
+    min-width: 200px;
+    text-align: center;
+}
+
+.mat-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.mat-row:hover{
+    cursor: default;
+}

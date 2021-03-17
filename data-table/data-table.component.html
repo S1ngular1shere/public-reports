@@ -1,0 +1,56 @@
+<div class="report-table-info">
+    <h2>{{appService.language_dictionary.report_view_table}}</h2>
+    <app-parameters [params]="parameters"></app-parameters>
+</div>
+<div [ngClass]="{'no-hover': false, 'table-container': true}">
+    <table mat-table [dataSource]="data">
+
+        <!-- Строки шапки с показателями -->
+        <ng-template ngFor let-ids [ngForOf]="headerRows" let-i="layer">
+            <tr mat-header-row *matHeaderRowDef="ids"></tr>
+        </ng-template>
+
+        <!-- Шапка таблицы из показателей -->
+        <ng-template ngFor let-layer [ngForOf]="layers">
+            <ng-template ngFor let-item [ngForOf]="layer">
+                <ng-container [matColumnDef]="'c_' + item.id" [sticky]="item.id == 'main'">
+                    <th
+                        mat-header-cell
+                        class="table-column-100"
+                        *matHeaderCellDef
+                        [attr.rowspan]="item.height"
+                        [attr.colspan]="item.width"
+                    >{{item.name}}</th>
+                </ng-container>
+            </ng-template>
+        </ng-template>
+
+        <!-- Строка с единицами измерения -->
+        <tr mat-header-row *matHeaderRowDef="unitIds"></tr>
+
+        <!-- Колонки с единицами измерения и данными-->
+        <ng-template ngFor let-column [ngForOf]="columns">
+            <ng-container [matColumnDef]="'u_' + column.id" [sticky]="column.id == 'main'">
+                <th mat-header-cell class="table-column-100" *matHeaderCellDef>{{column.factor_unit_name}}</th>
+                <td mat-cell class="table-column-100" *matCellDef="let row">
+                    <ng-template [ngIf]="column.id != 'main'">
+                        <strong *ngIf="row['u_' + column.id].bold">{{row['u_' + column.id].value | number:'1.0-2'}}</strong>
+                        <ng-template [ngIf]="row['u_' + column.id].value === '-'">
+                            <span *ngIf="!row['u_' + column.id].bold">-</span>
+                        </ng-template>
+                        <ng-template [ngIf]="row['u_' + column.id].value !== '-'">
+                            <span *ngIf="!row['u_' + column.id].bold">{{row['u_' + column.id].value | number:'1.0-2'}}</span>
+                        </ng-template>
+                    </ng-template>
+                    <ng-template [ngIf]="column.id == 'main'">
+                        <strong *ngIf="row['u_' + column.id].bold">{{row['u_' + column.id].value}}</strong>
+                        <span *ngIf="!row['u_' + column.id].bold">{{row['u_' + column.id].value}}</span>
+                    </ng-template>
+                </td>
+            </ng-container>
+        </ng-template>
+
+        <tr mat-row *matRowDef="let row; columns: unitIds"></tr>
+
+    </table>
+</div>

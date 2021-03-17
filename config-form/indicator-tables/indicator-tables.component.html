@@ -1,0 +1,52 @@
+<mat-table #dataMatTable="matTable" [dataSource]="data">
+    <ng-container *ngFor="let column of columns; let i = index;">
+        <ng-container [matColumnDef]="column.id">
+            <mat-header-cell *matHeaderCellDef>
+                <div fxLayout="row" fxLayoutAlign="center start" fxFlex="100%"
+                     *ngIf="['is_table','is_chart','is_map'].includes(column.id); else elseBlock">
+                                                <span>
+                                                    {{column.name}}
+                                                </span>
+                </div>
+                <ng-template #elseBlock>
+                                                <span>
+                                                    {{column.name}}
+                                                </span>
+                </ng-template>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <ng-container [ngSwitch]="column.id">
+                    <ng-container *ngSwitchCase="'is_table'">
+                        <div fxLayout="row" fxLayoutAlign="center start" fxFlex="100%">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                          (change)="$event ? column.select.toggle(row.id) : null"
+                                          [checked]="column.select.isSelected(row.id)">
+                            </mat-checkbox>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'is_chart'">
+                        <div fxLayout="row" fxLayoutAlign="center start" fxFlex="100%">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                          (change)="$event ? column.select.toggle(row.id) : null"
+                                          [checked]="column.select.isSelected(row.id)">
+                            </mat-checkbox>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'is_map'">
+                        <div fxLayout="row" fxLayoutAlign="center start" fxFlex="100%">
+                            <mat-radio-button (click)="$event.stopPropagation()"
+                                              (change)="$event ? column.select.toggle(row.id) : null"
+                                              >
+                            </mat-radio-button>
+                        </div>
+                    </ng-container>
+                    <ng-template ngSwitchDefault>
+                        {{row[column.id]}}
+                    </ng-template>
+                </ng-container>
+            </mat-cell>
+        </ng-container>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns; let index;"></mat-row>
+</mat-table>

@@ -1,0 +1,46 @@
+<div class="public-report-container">
+    <div fxLayout="row wrap">
+        <div fxFlex="100" fxFlexOffset="16px">
+            <h1>
+                {{appService.language_dictionary.report_quantitative_indic}}
+            </h1>
+        </div>
+    </div>
+
+    <div class="form-container-panel-tabs">
+
+        <app-config-form
+            (submit)="onChangeParam($event)"
+        ></app-config-form>
+
+        <div class="report-visualization">
+
+
+
+            <app-data-table
+                *ngIf="reports.table"
+                [report]="reports.table"
+            ></app-data-table>
+
+            <app-data-chart
+                *ngIf="reports.chartRegion"
+                [report]="reports.chartRegion"
+                [title]="appService.language_dictionary.report_view_region_chart"
+                type="bar"
+            ></app-data-chart>
+
+            <app-data-chart
+                *ngIf="reports.chartPeriod"
+                [report]="reports.chartPeriod"
+                [title]="appService.language_dictionary.report_view_period_chart"
+                type="line"
+            ></app-data-chart>
+
+            <app-map
+                *ngIf="reports.map"
+                [report]="reports.map"
+            ></app-map>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div>
+    <h2>{{title}}</h2>
+    <app-parameters [params]="parameters"></app-parameters>
+    <div id="legend"></div>
+    <div id="reportChartRegion">
+        <div *ngIf="customLegendData">
+            <ul class="my-legend">
+                <li class="legend-item" *ngFor="let legendItem of customLegendData">
+                    {{legendItem.text}}</li>
+            </ul>
+        </div>
+        <canvas baseChart
+                [datasets]="data.data"
+                [labels]="data.labels"
+                [options]="data.options"
+                [plugins]="data.plugins"
+                [legend]="data.legend"
+                [chartType]="data.type"
+        >
+        </canvas>
+    </div>
+</div>

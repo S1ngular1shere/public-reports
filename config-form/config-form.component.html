@@ -1,0 +1,359 @@
+<mat-accordion class="public-report-accordion" multi *ngIf="showForm">
+    <mat-expansion-panel class="form-field-margin-bottom" expanded="expanded">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{appService.language_dictionary.report_general_settings}}
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <ng-container>
+            <ng-container dynamic-field [field]="{
+                        type: 'select-tree',
+                        label: appService.language_dictionary.choose_indicator,
+                        name: 'indicators',
+                        multiple: true,
+                        required: true,
+                        validations: [
+                            {
+                                name: 'required',
+                                message: appService.language_dictionary.system_field_required
+                            },
+                            {
+                                name: 'serverError'
+                            }
+                        ]
+                        }" [group]="form" [data]="{
+                            title: appService.language_dictionary.choose_indicator,
+                            treeData: registers.indicators ? registers.indicators : []
+                         }"></ng-container>
+
+            <ng-container dynamic-field [field]="{
+                            type: 'select-tree',
+                            label: appService.language_dictionary.system_level_subject,
+                            name: 'subjects',
+                            multiple: true,
+                            required: true,
+                            validations: [
+                                {
+                                    name: 'required',
+                                    message: appService.language_dictionary.system_field_required
+                                },
+                                {
+                                    name: 'serverError'
+                                }
+                            ]
+                            }" [group]="form" [data]="{
+                                title: appService.language_dictionary.system_level_subject,
+                                isFolderSelect: true,
+                                treeData: registers.subjects ? registers.subjects : []
+                             }">
+            </ng-container>
+
+            <ng-container dynamic-field [field]="{
+                            type: 'select-search',
+                            label: appService.language_dictionary.system_select_report_statuses,
+                            name: 'statuses',
+                            options: registers.report_statuses ? registers.report_statuses : [],
+                            multiple: true,
+                            required: true,
+                            validations: [
+                                {
+                                    name: 'required',
+                                    message: appService.language_dictionary.system_field_required
+                                },
+                                {
+                                    name: 'serverError'
+                                }
+                            ]
+                            }" [group]="form">
+            </ng-container>
+
+            <div *ngIf="(registers.reports ? registers.reports : []).length > 0">
+
+                <div fxLayout="row wrap" class="select-table-type-x">
+                    <ng-container dynamic-field [field]="{
+                                type: 'radiobutton',
+                                name: 'reportPeriodType',
+                                options: [
+                                    {value: 'reports', name: appService.language_dictionary.report_select_report},
+                                    {value: 'period', name: appService.language_dictionary.field_report_period_type_period}
+                                ],
+                                validations: [
+                                    {
+                                        name: 'serverError'
+                                    }
+                                ]
+                                }" [group]="form"></ng-container>
+                </div>
+                <div fxLayout="row wrap">
+                    <div fxFlex="50%" *ngIf="form.value.reportPeriodType == 'reports'">
+                        <ng-container
+                            #reportsSelectTree="dynamic-field"
+                            dynamic-field
+                            [field]="{
+                                        type: 'select-tree',
+                                        label: appService.language_dictionary.report_select_report,
+                                        name: 'reports',
+                                        multiple: true,
+                                        required: true,
+                                        validations: [
+                                            {
+                                                name: 'required',
+                                                message: appService.language_dictionary.system_field_required
+                                            },
+                                            {
+                                                name: 'serverError'
+                                            }
+                                        ]
+                                        }" [group]="form" [data]="{
+                                            title: appService.language_dictionary.report_select_report,
+                                            isFolderSelect: true,
+                                            isChildrenTree: true,
+                                            treeData: registers.reports ? registers.reports : []
+                             }">
+                        </ng-container>
+                    </div>
+                    <div fxFlex="50%" *ngIf="form.value.reportPeriodType == 'period'">
+                        <div fxLayout="row wrap">
+                            <div fxFlex="320px">
+                                <ng-container dynamic-field [field]="{
+                                                   type: 'date-range',
+                                                   label: appService.language_dictionary.report_select_period,
+                                                   required: true,
+                                                   name: 'reports_date',
+                                                   validations: [
+                                            {
+                                                name: 'reqPeriodOrReports',
+                                                message: appService.language_dictionary.system_field_required
+                                            },
+                                            {
+                                                name: 'serverError'
+                                            }
+                                        ]
+                                                   }" [data]="dateClass"
+                                              [group]="form"></ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+    </mat-expansion-panel>
+    <mat-expansion-panel class="form-field-margin-bottom" expanded="expanded" *ngIf="formParams.showIndicatorsSettings">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{appService.language_dictionary.report_indicators_settings}}
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div>
+            <ng-container>
+                <app-indicator-tables [data]="formParams.indicatorsForSelector" (selected)="selectIndicator($event)"></app-indicator-tables>
+            </ng-container>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel class="form-field-margin-bottom" expanded="expanded" *ngIf="formParams.showTableSettings || formParams.showChartSettings || formParams.showMapSettings">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{appService.language_dictionary.report_view_settings}}
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-container>
+            <div fxLayout="column">
+                <ng-container *ngIf="formParams.showTableSettings">
+                    <ng-container dynamic-field [field]="{
+                            type: 'checkbox',
+                            label: appService.language_dictionary.tabular,
+                            name: 'isTable'
+                            }" [group]="form"></ng-container>
+                    <div class="m-bottom-15"></div>
+                    <div fxLayout="row wrap" class="radiobutton-switch">
+                        <ng-container dynamic-field [field]="{
+                                type: 'radiobutton',
+                                name: 'tableType',
+                                disabled: !form.value.isTable,
+                                options: [
+                                    {value: 'region', name: appService.language_dictionary.field_report_type_region},
+                                    {value: 'period', name: appService.language_dictionary.field_report_type_period}
+                                ],
+                                validations: [
+                                    {
+                                        name: 'serverError'
+                                    }
+                                ]
+                                }" [group]="form"></ng-container>
+                    </div>
+                    <div fxLayout="row wrap">
+                        <div fxFlex="50%">
+                            <ng-container dynamic-field [field]="{
+                                    type: 'radiobutton',
+                                    label: '',
+                                    name: 'tableTypeRegion',
+                                    disabled: form.value.tableType !== 'region' || !form.value.isTable,
+                                    options: [
+                                        {name: appService.language_dictionary.summarizing_data_period, value: 'sum'},
+                                        {name: appService.language_dictionary.averaging_data_period, value: 'avg'}
+                                    ],
+                                    required: true,
+                                    validations: [
+                                        {
+                                            name: 'required',
+                                            message: appService.language_dictionary.system_field_required
+                                        }
+                                    ]
+                                    }" [group]="form"></ng-container>
+                        </div>
+                        <div fxFlex="50%">
+                            <ng-container dynamic-field [field]="{
+                                    type: 'radiobutton',
+                                    label: '',
+                                    name: 'tableTypePeriod',
+                                    disabled: form.value.tableType !== 'period' || !form.value.isTable,
+                                    options: [
+                                        {name: appService.language_dictionary.summarizing_data_region, value: 'sum'},
+                                        {name: appService.language_dictionary.averaging_data_region, value: 'avg'}
+                                    ],
+                                    required: true,
+                                    validations: [
+                                        {
+                                            name: 'required',
+                                            message: appService.language_dictionary.system_field_required
+                                        }
+                                    ]
+                                    }" [group]="form"></ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <mat-divider *ngIf="formParams.showTableSettings" class="report-divider"></mat-divider>
+                <ng-container *ngIf="formParams.showChartSettings">
+                    <div fxLayout="row wrap">
+                        <div fxLayout="column" fxFlex="50%">
+                            <ng-container dynamic-field [field]="{
+                                        type: 'checkbox',
+                                        label: appService.language_dictionary.region_histogram,
+                                        name: 'chartHistogram'
+                                        }" [group]="form"></ng-container>
+                            <div class="m-bottom-15"></div>
+                            <ng-container dynamic-field [field]="{
+                                        type: 'radiobutton',
+                                        label: '',
+                                        disabled: !form.value.chartHistogram,
+                                        name: 'chartHistogramKind',
+                                        options: [
+                                            {name: appService.language_dictionary.summarizing_data_period, value: 'sum'},
+                                            {name: appService.language_dictionary.averaging_data_period, value: 'avg'}
+                                        ],
+                                        validations: [
+                                            {
+                                                name: 'serverError'
+                                            }
+                                        ]
+                                    }" [group]="form"></ng-container>
+                            <ng-container dynamic-field [field]="{
+                                        type: 'checkbox',
+                                        disabled: !form.value.chartHistogram,
+                                        label: 'Отразить на гистограмме среднее',
+                                        name: 'chartReflectOnHistogramAvg'
+                                        }" [group]="form"></ng-container>
+                        </div>
+                        <div fxFlex="50%">
+                            <ng-container dynamic-field [field]="{
+                                        type: 'checkbox',
+                                        label: appService.language_dictionary.period_chart,
+                                        name: 'periodChart'
+                                        }" [group]="form"></ng-container>
+                            <div class="m-bottom-15"></div>
+                            <ng-container dynamic-field [field]="{
+                                        type: 'radiobutton',
+                                        label: '',
+                                        disabled: !form.value.periodChart,
+                                        name: 'chartPeriodKind',
+                                        options: [
+                                            {name: appService.language_dictionary.summarizing_data_period, value: 'sum'},
+                                            {name: appService.language_dictionary.averaging_data_period, value: 'avg'}
+                                        ],
+                                        validations: [
+                                            {
+                                                name: 'serverError'
+                                            }
+                                        ]
+                                        }" [group]="form"></ng-container>
+                            <div fxLayout="row" class="checkbox-horizontal-list">
+                                <ng-container dynamic-field [field]="{
+                                            type: 'checkbox',
+                                            label: 'Минимальное',
+                                            disabled: !form.value.periodChart,
+                                            name: 'chartReflectOnChartMin'
+                                            }" [group]="form"></ng-container>
+                                <ng-container dynamic-field [field]="{
+                                            type: 'checkbox',
+                                            label: 'Среднее',
+                                            disabled: !form.value.periodChart,
+                                            name: 'chartReflectOnChartAvg'
+                                            }" [group]="form"></ng-container>
+                                <ng-container dynamic-field [field]="{
+                                            type: 'checkbox',
+                                            label: 'Максимальное',
+                                            disabled: !form.value.periodChart,
+                                            name: 'chartReflectOnChartMax'
+                                            }" [group]="form"></ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-bottom-15"></div>
+                </ng-container>
+                <mat-divider *ngIf="formParams.showChartSettings" class="report-divider"></mat-divider>
+                <ng-container *ngIf="formParams.showMapSettings">
+
+                    <ng-container dynamic-field [field]="{
+                                type: 'checkbox',
+                                label: appService.language_dictionary.report_view_map,
+                                name: 'isRegionMap'
+                                }" [group]="form"></ng-container>
+                    <div class="m-bottom-15"></div>
+                    <ng-container dynamic-field [field]="{
+                                        type: 'radiobutton',
+                                        label: '',
+                                        disabled: !form.value.isRegionMap,
+                                        name: 'regionMapKind',
+                                        options: [
+                                            {name: appService.language_dictionary.summarizing_data_period, value: 'sum'},
+                                            {name: appService.language_dictionary.averaging_data_period, value: 'avg'}
+                                        ],
+                                        validations: [
+                                            {
+                                                name: 'serverError'
+                                            }
+                                        ]
+                                        }" [group]="form"></ng-container>
+
+                </ng-container>
+            </div>
+        </ng-container>
+    </mat-expansion-panel>
+</mat-accordion>
+<div class="report-button-panel">
+    <ng-container >
+        <div fxFlexOffset="0">
+            <button type="button" mat-raised-button color="primary" class="generate-report-btn"
+                    (click)="generateReport()">
+                {{appService.language_dictionary.report_generate_report}}
+            </button>
+        </div>
+    </ng-container>
+    <ng-container>
+        <div fxFlexOffset="8px">
+            <button type="button" mat-raised-button class="generate-report-btn"
+                    (click)="exportTableToExcel()">
+                {{appService.language_dictionary.factor_export}}
+            </button>
+        </div>
+    </ng-container>
+</div>
+<mat-divider class="report-divider"></mat-divider>

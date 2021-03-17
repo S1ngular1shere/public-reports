@@ -1,0 +1,22 @@
+<p *ngIf="regions">
+    <strong>{{appService.language_dictionary.report_on_indicators_by_region}} : </strong>
+    <ng-container *ngFor="let item of regions; last as isLast">
+        <ng-container *ngIf="!isLast">{{ item.name }},&nbsp;</ng-container>
+        <ng-container *ngIf="isLast">{{ item.name }}.</ng-container>
+    </ng-container>
+</p>
+<p *ngIf="period_from && period_to">
+    <strong>{{appService.language_dictionary.report_in_period}} : </strong>
+    {{period_from|date:'dd.MM.y'}} - {{period_to|date:'dd.MM.y'}}
+</p>
+<p *ngIf="type_name">
+    <strong >
+        {{type_name}}
+    </strong>
+</p>
+
+<p *ngIf="type_name">
+    <strong >
+        {{kind_name}}
+    </strong>
+</p>
